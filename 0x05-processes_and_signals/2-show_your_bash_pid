@@ -1,4 +1,4 @@
-#!/usr/bin env bash
+#!/usr/bin/env bash
 #  Bash script that displays lines containing the keyword bash
 # shellcheck disable=SC2009
 
