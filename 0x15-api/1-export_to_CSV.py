@@ -1,21 +1,28 @@
 #!/usr/bin/python3
-"""using this REST API, returns information"""
-
+"""
+Fetch Data from a site using api and save to csv file
+"""
 import csv
-from sys import argv
-import requests
+from requests import get
+import sys
 
-if __name__ == "__main__":
-    employee_id = argv[1]
-    lists = requests.get(
-        "https://jsonplaceholder.typicode.com/users/{}"
-        .format(employee_id)).json()
-    details = requests.get(
-        "https://jsonplaceholder.typicode.com/users/{}/todos"
-        .format(employee_id)).json()
-    with open('{}.csv'.format(employee_id), mode='w') as employee_file:
-        employee_writer = csv.writer(employee_file, quoting=csv.QUOTE_ALL)
-        name = lists.get('username')
-        for task in details:
-            row = [employee_id, name, task.get('completed'), task.get('title')]
-            employee_writer.writerow(row)
+
+if __name__ == '__main__':
+    todos = get("https://jsonplaceholder.typicode.com/users/{}/todos".
+                format(sys.argv[1]))
+    employee = get("https://jsonplaceholder.typicode.com/users/{}".
+                   format(sys.argv[1]))
+    if todos.ok and employee.ok:
+        todos_list = todos.json()
+        employee_data = employee.json()
+        # Design the output
+        with open("{}.csv".format(sys.argv[1]), "w", encoding="utf-8") as file:
+            writer = csv.writer(file, quotechar="'")
+            for todo in todos_list:
+                writer.writerow([
+                    "\"{}\"".format(employee_data.get("id")),
+                    "\"{}\"".format(employee_data.get("username")),
+                    "\"{}\"".format(todo.get("completed")),
+                    "\"{}\"".format(todo.get("title")),
+                ]
+                )
