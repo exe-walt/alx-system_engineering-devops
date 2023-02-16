@@ -1,29 +1,39 @@
 #!/usr/bin/python3
-"""using this REST API, returns information"""
-
+"""
+    Takes an argument passed to the script to be used in an API query.
+    Retrieved data is then printed in a formatted way.
+"""
+import json
 import requests
-from sys import argv
+import sys
+
 
 if __name__ == "__main__":
-    employee_id = argv[1]
-    lists = requests.get(
-        "https://jsonplaceholder.typicode.com/users/{}"
-        .format(employee_id)).json()
-    details = requests.get(
-        "https://jsonplaceholder.typicode.com/users/{}/todos"
-        .format(employee_id)).json()
-    EMPLOYEE_NAME = lists.get('name')
-    TOTAL_NUMBER_OF_TASKS = 0
-    NUMBER_OF_DONE_TASKS = 0
-    TASK_TITLE = []
-    for i in details:
-        TOTAL_NUMBER_OF_TASKS += 1
-        if i.get('completed') is True:
-            NUMBER_OF_DONE_TASKS += 1
-            TASK_TITLE.append(i.get('title'))
-    print('Employee {} is done with tasks({}/{}):'
-          .format(EMPLOYEE_NAME,
-                  NUMBER_OF_DONE_TASKS,
-                  TOTAL_NUMBER_OF_TASKS))
-    for TASK in TASK_TITLE:
-        print("\t {}".format(TASK))
+    if len(sys.argv) == 2:
+        url = 'https://jsonplaceholder.typicode.com/'
+        user_resp = requests.get(url + 'users/{}'.format(sys.argv[1]))
+        todo_resp = requests.get(url + 'todos?userId={}'.format(sys.argv[1]))
+        if all([user_resp, todo_resp]) is not None:
+            try:
+                user_d = json.loads(user_resp.text)
+            except JSONDecodeError:
+                user_d = {}
+            try:
+                todo_l = json.loads(todo_resp.text)
+            except JSONDecodeError:
+                todo_l = []
+            tasks = ''
+            completed = 0
+            total = 0
+            if type(todo_l) is list:
+                for todo in todo_l:
+                    if type(todo) is not dict:
+                        continue
+                    if todo.get('completed') is True:
+                        tasks += '\t {}\n'.format(todo.get('title'))
+                        completed += 1
+                total = len(todo_l)
+            if type(user_d) is dict and user_d != {}:
+                employee = 'Employee {} is done with tasks({}/{}):\n'\
+                    .format(user_d.get('name'), completed, total)
+                print(employee + tasks, end='')
