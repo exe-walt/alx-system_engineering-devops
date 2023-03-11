@@ -1,5 +1,7 @@
 # 0x19-postmortem
 
+https://www.google.com/url?sa=i&url=https%3A%2F%2Fmakeameme.org%2Fmeme%2Fi-dont-like-efkf3y&psig=AOvVaw3NxbNmz9KDUJX83INPcdHL&ust=1678651749134000&source=images&cd=vfe&ved=0CBAQjRxqFwoTCOC2kZzX1P0CFQAAAAAdAAAAABAE
+
 Issue Summary:
 --------------------------------------------------
 On March 27th, 2022, the web server of our online shopping platform experienced an outage that lasted for 2 hours and 30 minutes, from 3:30 pm to 6:00 pm GMT. During this period, users were unable to access the website, and those who managed to access it experienced slow loading times. Approximately 75% of the users were affected by the outage.
